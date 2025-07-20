@@ -1,0 +1,132 @@
+/* Navigation Component Styles */
+
+.navigation {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 250px;
+  height: 100vh;
+  background: white;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+.nav-header {
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.nav-header h2 {
+  margin: 0 0 8px 0;
+  color: #1f2937;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.welcome-text {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.nav-menu {
+  flex: 1;
+  list-style: none;
+  margin: 0;
+  padding: 20px 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: #6b7280;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: none;
+  background: none;
+  width: 100%;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.nav-link:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.nav-link.active {
+  background-color: #ede9fe;
+  color: #7c3aed;
+  border-right: 3px solid #7c3aed;
+}
+
+.nav-footer {
+  border-top: 1px solid #e5e7eb;
+  padding: 20px 0;
+}
+
+.sign-out {
+  color: #ef4444 !important;
+}
+
+.sign-out:hover {
+  background-color: #fee2e2 !important;
+  color: #dc2626 !important;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-button {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 8px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mobile-menu-button {
+    display: block;
+  }
+
+  .navigation {
+    transform: translateX(-100%);
+  }
+
+  .navigation.mobile-open {
+    transform: translateX(0);
+  }
+
+  .mobile-overlay {
+    display: block;
+  }
+}
+
+/* Animation for mobile menu */
+@media (max-width: 768px) {
+  .navigation {
+    transition: transform 0.3s ease-in-out;
+  }
+}
