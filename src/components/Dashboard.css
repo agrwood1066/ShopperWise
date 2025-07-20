@@ -64,6 +64,20 @@
   border-left: 4px solid #f59e0b;
 }
 
+.stat-card.urgent {
+  border-left: 4px solid #ef4444;
+  background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
+}
+
+.stat-card.urgent .stat-icon {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.stat-card.urgent:hover {
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+}
+
 /* Placeholder cards for future phases */
 .stat-card.inventory-placeholder,
 .stat-card.expiry-placeholder,

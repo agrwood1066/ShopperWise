@@ -45,26 +45,23 @@ const Dashboard = ({ userProfile }) => {
       // Count favourite recipes
       const favouriteCount = recipes?.filter(r => r.is_favourite).length || 0;
 
-      // Fetch inventory count (placeholder for now)
+      // Fetch inventory count
       const { count: inventoryCount } = await supabase
         .from('current_inventory')
-        .select('*', { count: 'exact', head: true })
+        .select('*', { count: 'exact' })
         .eq('family_id', userProfile.family_id);
 
-      // Fetch expiring items (within 7 days) - placeholder for now
-      const sevenDaysFromNow = new Date();
-      sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
-      
+      // Fetch expiring items using the smart inventory view
       const { count: expiringCount } = await supabase
-        .from('current_inventory')
-        .select('*', { count: 'exact', head: true })
+        .from('inventory_with_expiry_status')
+        .select('*', { count: 'exact' })
         .eq('family_id', userProfile.family_id)
-        .lte('expiry_date', sevenDaysFromNow.toISOString().split('T')[0]);
+        .in('expiry_status', ['expired', 'expiring', 'soon']);
 
-      // Fetch active shopping lists (placeholder for now)
+      // Fetch active shopping lists
       const { count: activeListsCount } = await supabase
         .from('shopping_lists')
-        .select('*', { count: 'exact', head: true })
+        .select('*', { count: 'exact' })
         .eq('family_id', userProfile.family_id)
         .in('status', ['planning', 'active']);
 
@@ -141,29 +138,37 @@ const Dashboard = ({ userProfile }) => {
           </Link>
         </div>
 
-        <div className="stat-card inventory-placeholder">
+        <div className="stat-card">
           <div className="stat-icon">
             <Package size={24} />
           </div>
           <div className="stat-content">
-            <h3>Coming Soon</h3>
-            <p>Inventory Tracking</p>
+            <h3>{stats.inventoryItems}</h3>
+            <p>Inventory Items</p>
+            {stats.inventoryItems > 0 && (
+              <small>Smart tracking active</small>
+            )}
           </div>
           <Link to="/inventory" className="stat-link">
-            Phase 3
+            {stats.inventoryItems > 0 ? 'Manage' : 'Start Tracking'}
           </Link>
         </div>
 
-        <div className="stat-card expiry-placeholder">
+        <div className={`stat-card ${stats.expiringItems > 0 ? 'urgent' : ''}`}>
           <div className="stat-icon">
             <AlertTriangle size={24} />
           </div>
           <div className="stat-content">
-            <h3>Coming Soon</h3>
-            <p>Expiry Alerts</p>
+            <h3>{stats.expiringItems}</h3>
+            <p>Need Attention</p>
+            {stats.expiringItems > 0 ? (
+              <small>Items expiring soon</small>
+            ) : (
+              <small>All items fresh</small>
+            )}
           </div>
           <Link to="/inventory" className="stat-link">
-            Phase 3
+            {stats.expiringItems > 0 ? 'Check Now' : 'View All'}
           </Link>
         </div>
 
@@ -189,15 +194,14 @@ const Dashboard = ({ userProfile }) => {
             <Plus size={20} />
             <span>Add Recipe</span>
           </Link>
-          <Link to="/inventory" className="action-card disabled">
+          <Link to="/inventory" className="action-card">
             <Package size={20} />
             <span>Update Inventory</span>
-            <small>Phase 3</small>
           </Link>
           <Link to="/meal-planner" className="action-card disabled">
             <Calendar size={20} />
             <span>Plan This Week</span>
-            <small>Phase 3</small>
+            <small>Coming Soon</small>
           </Link>
           <Link to="/shopping" className="action-card disabled">
             <ShoppingCart size={20} />
@@ -301,14 +305,21 @@ const Dashboard = ({ userProfile }) => {
               <div className="phase-icon">✅</div>
               <div className="phase-content">
                 <h4>Phase 2: Recipe Management</h4>
-                <p>Add, edit, search, and organise recipes</p>
+                <p>Add, edit, search, and organise recipes with AI import</p>
+              </div>
+            </div>
+            <div className="phase-item completed">
+              <div className="phase-icon">✅</div>
+              <div className="phase-content">
+                <h4>Phase 3: Smart Inventory</h4>
+                <p>Inventory tracking with expiry alerts and recipe integration</p>
               </div>
             </div>
             <div className="phase-item pending">
-              <div className="phase-icon">🔄</div>
+              <div className="phase-icon">⏳</div>
               <div className="phase-content">
-                <h4>Phase 3: Inventory & AI Planning</h4>
-                <p>Smart inventory tracking and meal suggestions</p>
+                <h4>Phase 3: AI Meal Planning</h4>
+                <p>Intelligent meal suggestions and weekly planning</p>
               </div>
             </div>
             <div className="phase-item pending">

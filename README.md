@@ -167,7 +167,46 @@ Ingredients are automatically categorised into:
 - 🫒 **Oils & Condiments** - Olive oil, soy sauce, etc.
 - 🥫 **Pantry** - Tinned goods, dried items, etc.
 
-Categories can be manually corrected if auto-detection needs adjustment.
+## 📱 Smart Inventory Management
+
+### **How It Works:**
+1. **Add any ingredient** - Type ingredient names freely ("Organic free-range chicken breast")
+2. **Smart categorisation** - Auto-detects categories or choose manually  
+3. **Set storage location** - Fridge, freezer, or pantry with optional details
+4. **Track expiry dates** - Set your own dates for complete control
+5. **Monitor costs** - Track spending and store information
+6. **Get recipe suggestions** - See what you can cook with current inventory
+
+### **Key Features:**
+- ✅ **Flexible ingredient entry** - No predefined lists, type anything
+- ✅ **Intelligent categorisation** - Auto-sorts into vegetables, meat, dairy, etc.
+- ✅ **Visual expiry alerts** - Red/orange/yellow/green colour coding
+- ✅ **Recipe integration** - "Chicken breast" matches recipes calling for "chicken"
+- ✅ **Advanced search** - Filter by name, location, expiry status
+- ✅ **Cost tracking** - Monitor spending and favourite stores
+- ✅ **Mobile optimised** - Perfect for shopping or kitchen use
+
+### **Inventory Categories:**
+- 🥬 **Vegetables** - Onions, carrots, broccoli, etc.
+- 🍎 **Fruits** - Apples, bananas, berries, etc.  
+- 🥩 **Meat** - Chicken, beef, pork, etc.
+- 🐟 **Fish** - Salmon, cod, prawns, etc.
+- 🥛 **Dairy** - Milk, cheese, butter, etc.
+- 🌾 **Grains** - Rice, pasta, bread, etc.
+- 🌿 **Herbs & Spices** - Basil, pepper, garlic, etc.
+- 🥫 **Oils & Condiments** - Olive oil, soy sauce, etc.
+- 🥫 **Pantry** - Tinned goods, dried items, etc.
+
+### **Example Workflow:**
+```
+1. Open ShopperWise → Smart Inventory
+2. Click "Add Item"
+3. Type: "Organic free-range chicken breast"
+4. Auto-categorises as "Meat" (or choose manually)
+5. Select "Fridge" storage, add "500g" quantity  
+6. Set expiry date, add cost if desired
+7. Save → Get instant recipe suggestions!
+```
 
 ## 📊 Database Schema
 
@@ -204,12 +243,26 @@ Categories can be manually corrected if auto-detection needs adjustment.
 - [x] Dashboard integration showing recipe stats
 - [x] Mobile-optimised forms and camera support
 
-### 📅 Phase 3: Inventory & AI Planning (Coming Next)
-- [ ] Inventory tracking with expiry alerts
-- [ ] Claude AI meal suggestions based on available ingredients
-- [ ] Weekly planning questionnaire
+### ✅ Phase 3: Smart Inventory Management (Complete!)
+- [x] **Flexible ingredient tracking** with open-text ingredient names for maximum usability
+- [x] **Colour-coded expiry alerts** (red=expired, orange=expiring, yellow=soon, green=fresh)
+- [x] **Smart dashboard statistics** showing total items, urgent alerts, and total value
+- [x] **Recipe integration** - see which recipes you can make with current inventory
+- [x] **Full CRUD operations** - add, edit, delete inventory items with rich metadata
+- [x] **Advanced filtering** by location (fridge/freezer/pantry), expiry status, and search
+- [x] **Intelligent auto-categorisation** with manual override options
+- [x] **Purchase tracking** with cost monitoring and store information
+- [x] **Mobile-optimised interface** with responsive design
+- [x] **Fuzzy recipe matching** - works with any ingredient names ("chicken breast" matches "chicken")
+- [x] **User-controlled expiry dates** - set your own dates for complete flexibility
+- [x] **Multiple storage locations** with detailed location notes
+
+### 📅 Phase 3B: AI Meal Planning (Coming Next)
+- [ ] Claude AI meal suggestions based on available inventory
+- [ ] Weekly planning questionnaire system
 - [ ] Smart meal recommendations using recipe database
-- [ ] Integration between inventory and recipe ingredients
+- [ ] Seasonal meal planning with ingredient availability
+- [ ] Budget-conscious suggestions using current inventory
 
 ### 📅 Phase 4: Shopping Lists & Budget
 - [ ] Auto-generated shopping lists from meal plans
@@ -305,10 +358,19 @@ database/
 - **Partial extraction?** Some websites may block automated access - try a different URL
 - **Missing ingredients?** The AI will extract what's available - you can manually add more
 
-### Recipe Manager Issues
-- **Can't upload photos?** Check if storage bucket exists and RLS policies are set
-- **Auto-categorisation not working?** Check ingredient spelling and try manual category
-- **Recipes not saving?** Verify at least one ingredient is added
+### ❗ Database Setup Required
+
+**For the Smart Inventory features to work, you need to run the Phase 3 database update:**
+
+1. Open your Supabase SQL Editor
+2. Copy and paste the contents of `/database/phase3_inventory_update.sql`
+3. Run the SQL to add the new inventory columns and views
+
+This update adds:
+- Open-text ingredient names
+- Flexible category system
+- Storage location tracking
+- Enhanced expiry monitoring
 
 ### Storage Issues
 - **Images not displaying?** Check if bucket 'recipe-images' exists and is public
