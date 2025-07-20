@@ -1,6 +1,6 @@
 # ShopperWise - Smart Meal Planning App
 
-A comprehensive meal planning and smart inventory management web application built with React and Supabase. Now featuring **enhanced Recipe Management** with individual ingredient tracking, auto-categorisation, and photo uploads.
+A comprehensive meal planning and smart inventory management web application built with React and Supabase. Now featuring **AI-powered recipe extraction** with Claude integration for intelligent recipe imports from any website.
 
 ## 🌟 Current Features
 
@@ -10,30 +10,32 @@ A comprehensive meal planning and smart inventory management web application bui
 - 📊 **Dashboard** - Overview of recipes, inventory, and upcoming features
 - 👤 **Profile Management** - Set dietary preferences and cooking skills
 
-### ✅ Phase 2: Enhanced Recipe Management (UPDATED!)
-- 📝 **Add Recipes** - Manual recipe entry with detailed forms
-- 🔗 **URL Import** - Import recipes from websites using LinkPreview API
+### ✅ Phase 2: AI-Powered Recipe Management (COMPLETE!)
+- 📝 **Manual Recipe Entry** - Detailed forms with enhanced ingredient tracking
+- 🧠 **AI Recipe Import** - Claude-powered extraction from any recipe website
 - 🔍 **Search & Filter** - Find recipes by name, cuisine, or difficulty
 - ⭐ **Recipe Rating** - 5-star health rating system and favourites
-- 🏷️ **Categorisation** - Cuisine types, dietary tags, cooking methods
+- 🏷️ **Smart Categorisation** - Cuisine types, dietary tags, cooking methods
 - ✏️ **Full CRUD** - Edit, delete, and manage all your recipes
 - 📱 **Responsive Design** - Beautiful recipe cards and mobile-optimised forms
 
-#### 🆕 **New in Latest Update:**
-- **🥕 Individual Ingredients** - Track Item, Quantity, Notes with auto-categorisation
+#### 🆕 **Latest AI Enhancement:**
+- **🤖 Claude-Powered Import** - Extracts complete recipe data from any website
+- **🌐 Universal Support** - Works with BBC Good Food, AllRecipes, Jamie Oliver & more
+- **📋 Complete Extraction** - Gets ingredients, instructions, times, and metadata
+- **🥕 Individual Ingredients** - Item, Quantity, Notes with auto-categorisation
 - **📸 Recipe Photos** - Upload and store recipe images (optimised for storage)
-- **🤖 Smart Categorisation** - Auto-detect ingredient categories (Vegetables, Meat, Dairy, etc.)
-- **✂️ Simplified Form** - Removed unused fields for cleaner UX
-- **🔧 Enhanced UI** - Better mobile experience and ingredient management
+- **🔧 Intelligent Processing** - Auto-categorises ingredients and converts cooking times
 
 ## 🛠 Tech Stack
 
 - **Frontend**: React 18 with React Router
 - **Authentication & Database**: Supabase (PostgreSQL)
+- **AI Integration**: Claude API for recipe extraction
 - **Storage**: Supabase Storage (for recipe images)
 - **Styling**: Custom CSS with modern design system
 - **Icons**: Lucide React
-- **Recipe Import**: LinkPreview.net API
+- **Recipe Import**: LinkPreview.net API + Claude AI
 - **Hosting**: Cloudflare Pages (configured)
 - **Version Control**: GitHub
 
@@ -42,7 +44,8 @@ A comprehensive meal planning and smart inventory management web application bui
 - Node.js (v20 or higher)
 - npm or yarn
 - Supabase account
-- LinkPreview.net API key (optional, for URL imports)
+- Claude API key (for AI recipe import)
+- LinkPreview.net API key (optional, enhances import)
 
 ## 🚀 Getting Started
 
@@ -54,7 +57,7 @@ npm install
 
 ### 2. Set Up Supabase
 1. Create a new Supabase project at [supabase.com](https://supabase.com)
-2. Run the complete database schema from `/database/complete_schema.sql`
+2. Run the complete database schema from `/database/complete_schema.sql` OR the safe update from `/database/phase2_update.sql`
 3. Get your project URL and anon key from Settings > API
 
 ### 3. Configure Environment Variables
@@ -65,24 +68,26 @@ Edit the `.env` file in the root directory with your actual values:
 REACT_APP_SUPABASE_URL=your_supabase_project_url
 REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-# LinkPreview API for URL imports (OPTIONAL)
-REACT_APP_LINKPREVIEW_API_KEY=your_linkpreview_api_key
-
-# Claude API for future AI features (OPTIONAL)
+# Claude API for AI recipe import (RECOMMENDED)
 REACT_APP_CLAUDE_API_KEY=your_claude_api_key
+
+# LinkPreview API for enhanced imports (OPTIONAL)
+REACT_APP_LINKPREVIEW_API_KEY=your_linkpreview_api_key
 ```
 
-### 4. Set Up Storage Bucket
-The complete schema includes storage setup, but if you need to run it separately:
-```sql
--- Run this in Supabase SQL Editor if storage isn't working
--- (Already included in complete_schema.sql)
-```
+### 4. Set Up Storage & Database
+Choose one option:
+
+**Option A: New Installation**
+- Run `/database/complete_schema.sql` in Supabase SQL Editor
+
+**Option B: Existing Installation**
+- Run `/database/phase2_update.sql` for safe upgrade without affecting existing data
 
 ### 5. Add Sample Data (Optional)
 To test the Recipe Manager with sample data:
 1. Open `/database/sample_recipes.sql`
-2. Replace `YOUR_FAMILY_ID` and `YOUR_USER_ID` with your actual IDs from the profiles table
+2. Replace `YOUR_FAMILY_ID` and `YOUR_USER_ID` with your actual IDs
 3. Run the SQL in your Supabase SQL Editor
 
 ### 6. Run the Development Server
@@ -91,6 +96,40 @@ npm start
 ```
 
 The app will open at `http://localhost:3000`
+
+## 🧠 AI-Powered Recipe Import
+
+### **How It Works:**
+1. **Paste any recipe URL** from supported websites
+2. **Click "AI Import"** - Claude analyzes the webpage
+3. **Complete form population** - All recipe data extracted automatically
+4. **Review and save** - Make any adjustments and save
+
+### **Supported Websites:**
+- 🇬🇧 **BBC Good Food** - Complete extraction including ingredients and methods
+- 🌍 **AllRecipes** - Full recipe data with cooking instructions
+- 👨‍🍳 **Jamie Oliver** - Detailed ingredient lists and cooking steps
+- 🍽️ **Delicious Magazine** - Complete recipe information
+- 🌐 **Any Recipe Website** - Flexible AI extraction from any recipe source
+
+### **What Gets Extracted:**
+- ✅ **Recipe Name & Description**
+- ✅ **Complete Ingredients List** (individual items with quantities and notes)
+- ✅ **Step-by-Step Instructions** (numbered cooking steps)
+- ✅ **Cooking Times** (prep and cook time in minutes)
+- ✅ **Servings & Difficulty** (auto-detected from content)
+- ✅ **Cuisine Type** (British, Italian, Asian, etc.)
+- ✅ **Dietary Tags** (Vegetarian, Gluten-Free, etc.)
+- ✅ **Health Rating** (1-5 based on nutritional content)
+- ✅ **Recipe Photo** (from the source website)
+- ✅ **Auto-Categorised Ingredients** (Vegetables, Meat, Dairy, etc.)
+
+### **Example URLs to Test:**
+```
+https://www.bbcgoodfood.com/recipes/classic-spaghetti-bolognese
+https://www.jamieoliver.com/recipes/chicken-recipes/perfect-roast-chicken/
+https://www.allrecipes.com/recipe/231506/simple-macaroni-and-cheese/
+```
 
 ## 📸 Recipe Photos & Storage
 
@@ -112,7 +151,7 @@ The app will open at `http://localhost:3000`
 
 ### **Individual Ingredient Tracking:**
 - **Item Name** - What ingredient you're adding
-- **Quantity** - How much needed (flexible text: "2 tbsp", "1 large", "500g")
+- **Quantity** - How much needed (flexible: "2 tbsp", "1 large", "500g")
 - **Notes** - Additional details ("diced", "fresh", "optional")
 - **Auto-Category** - Smart detection of ingredient types
 
@@ -128,14 +167,14 @@ Ingredients are automatically categorised into:
 - 🫒 **Oils & Condiments** - Olive oil, soy sauce, etc.
 - 🥫 **Pantry** - Tinned goods, dried items, etc.
 
-Categories can be manually corrected if auto-detection is wrong.
+Categories can be manually corrected if auto-detection needs adjustment.
 
 ## 📊 Database Schema
 
 ✅ **Complete** - All tables and relationships defined
 - `profiles` - User accounts with meal planning preferences
 - `family_members` - Family account relationships
-- `recipes` - Recipe storage with enhanced ingredient structure (**Updated**)
+- `recipes` - Recipe storage with enhanced ingredient structure (**AI-Enhanced**)
 - `current_inventory` - Inventory tracking with expiry dates
 - `weekly_meal_plans` - Meal planning calendar
 - `shopping_lists` - Shopping list management
@@ -151,9 +190,10 @@ Categories can be manually corrected if auto-detection is wrong.
 - [x] Basic navigation and dashboard
 - [x] Profile management
 
-### ✅ Phase 2: Enhanced Recipe Management (Complete!)
+### ✅ Phase 2: AI-Enhanced Recipe Management (Complete!)
 - [x] Manual recipe entry with enhanced ingredient forms
-- [x] URL-based recipe import using LinkPreview API
+- [x] **Claude AI-powered recipe extraction from any website**
+- [x] **Universal recipe import (BBC Good Food, AllRecipes, etc.)**
 - [x] Recipe search and filtering (name, cuisine, difficulty)
 - [x] Recipe categorisation (cuisine, dietary tags, cooking methods)
 - [x] Full CRUD operations (create, read, update, delete)
@@ -179,6 +219,12 @@ Categories can be manually corrected if auto-detection is wrong.
 - [ ] Export functionality
 
 ## 🎨 Recipe Manager Features
+
+### **AI-Enhanced Recipe Import**
+- **Universal Website Support**: Works with any recipe website
+- **Complete Data Extraction**: Gets all recipe information automatically
+- **Smart Processing**: Auto-categorises ingredients and converts times
+- **Fallback Support**: Works even if AI is unavailable
 
 ### **Enhanced Recipe Forms**
 - **Smart Ingredient Entry**: Add items individually with quantity and notes
@@ -220,7 +266,7 @@ src/
 │   ├── Login.js              # Authentication (functional)
 │   ├── Navigation.js         # Side navigation (functional)
 │   ├── Profile.js            # Profile management (functional)
-│   ├── RecipeManager.js      # Enhanced recipe CRUD (functional)
+│   ├── RecipeManager.js      # AI-enhanced recipe CRUD (functional)
 │   ├── Inventory.js          # Placeholder for Phase 3
 │   ├── MealPlanner.js        # Placeholder for Phase 3
 │   └── ShoppingList.js       # Placeholder for Phase 4
@@ -230,6 +276,7 @@ src/
 
 database/
 ├── complete_schema.sql       # Complete database schema with storage
+├── phase2_update.sql         # Safe update for existing installations
 ├── sample_recipes.sql        # Sample data for testing
 └── setup_storage.sql        # Storage bucket setup (included in complete_schema)
 ```
@@ -249,8 +296,14 @@ database/
 - **Responsive**: Mobile-first design approach
 - **Icons**: Lucide React for consistency
 - **Images**: Auto-compressed for optimal storage usage
+- **AI Elements**: Gradient styling for AI-powered features
 
 ## 🚨 Troubleshooting
+
+### AI Recipe Import Issues
+- **Import not working?** Check your Claude API key in `.env`
+- **Partial extraction?** Some websites may block automated access - try a different URL
+- **Missing ingredients?** The AI will extract what's available - you can manually add more
 
 ### Recipe Manager Issues
 - **Can't upload photos?** Check if storage bucket exists and RLS policies are set
@@ -281,22 +334,25 @@ database/
 - Monitor usage in Supabase dashboard
 - Upgrade available from £0.021/GB/month
 
-## 🎉 What's New in This Update
+## 🎉 What's New in Latest Update
 
-### **Major Improvements:**
-1. **Individual Ingredient Tracking** - Much more detailed and AnyList-like
-2. **Smart Auto-Categorisation** - Ingredients sorted automatically
-3. **Recipe Photo Uploads** - Store and display recipe images
-4. **Simplified Forms** - Removed unused fields, cleaner UX
-5. **Enhanced Mobile Experience** - Better touch interactions and camera support
-6. **Storage Integration** - Complete image storage with compression
+### **Revolutionary AI Import:**
+1. **Universal Recipe Extraction** - Import from any recipe website with AI
+2. **Complete Data Population** - Ingredients, instructions, times, everything
+3. **Smart Processing** - Auto-categorisation and intelligent parsing
+4. **Website Support** - BBC Good Food, AllRecipes, Jamie Oliver & more
 
-### **Technical Enhancements:**
-1. **Supabase Storage Setup** - Complete image storage solution
-2. **Image Compression** - Automatic optimisation for storage efficiency
-3. **Enhanced Database Schema** - Support for new ingredient structure
-4. **Mobile Optimisation** - Better responsive design
-5. **Performance Improvements** - Faster loading and smoother interactions
+### **Enhanced User Experience:**
+1. **AI Import Button** - Gradient-styled button with brain icon
+2. **Progress Feedback** - Clear status messages during import
+3. **Graceful Fallbacks** - Works even without API keys
+4. **Mobile Optimisation** - Perfect mobile import experience
+
+### **Technical Improvements:**
+1. **Claude API Integration** - Full AI-powered recipe analysis
+2. **CORS Proxy Support** - Fetch content from any website
+3. **Intelligent Parsing** - Extract structured data from unstructured content
+4. **Error Handling** - Robust fallbacks and error recovery
 
 ## 🔮 Coming Soon (Phase 3)
 
@@ -308,8 +364,29 @@ The next phase will integrate your recipe collection with smart inventory manage
 
 ---
 
-**Ready to cook?** Add your recipes with detailed ingredients and photos! 🍳👨‍🍳
+## 🧠 **How to Use AI Import**
+
+1. **Find a recipe online** (BBC Good Food, AllRecipes, etc.)
+2. **Copy the URL** from your browser
+3. **Paste into the AI Import field** in ShopperWise
+4. **Click "AI Import"** and watch the magic happen
+5. **Review the extracted data** and make any adjustments
+6. **Save your recipe** with complete ingredient lists and instructions
+
+**Example workflow:**
+```
+1. Visit: https://www.bbcgoodfood.com/recipes/classic-spaghetti-bolognese
+2. Copy URL
+3. Paste in ShopperWise AI Import
+4. Click "AI Import" 
+5. Watch as ingredients, instructions, and details populate automatically
+6. Save and enjoy your perfectly imported recipe!
+```
 
 ---
 
-*ShopperWise Recipe Manager - Now with AnyList-inspired ingredient tracking and photo storage*
+**Ready to revolutionise your recipe collection?** Try the AI import with your favourite recipe websites! 🍳🤖
+
+---
+
+*ShopperWise Recipe Manager - Now with revolutionary AI-powered recipe extraction from any website*
