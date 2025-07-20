@@ -16,7 +16,8 @@ import {
   AlertCircle,
   Camera,
   Upload,
-  Minus
+  Minus,
+  Brain
 } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import './RecipeManager.css';
@@ -248,6 +249,238 @@ const RecipeManager = ({ userProfile }) => {
     }
   };
 
+  // Enhanced recipe extraction using Claude API
+  const extractRecipeWithClaude = async (url, basicPreview) => {
+    try {
+      const claudeApiKey = process.env.REACT_APP_CLAUDE_API_KEY;
+      if (!claudeApiKey) {
+        console.log('Claude API key not configured, using basic preview only');
+        return null;
+      }
+
+      // Fetch the full webpage content
+      const pageContent = await fetchPageContent(url);
+      if (!pageContent) {
+        throw new Error('Could not fetch page content');
+      }
+
+      // Create a comprehensive prompt for Claude
+      const prompt = `Extract detailed recipe information from this webpage content. This could be from BBC Good Food, AllRecipes, Jamie Oliver, Delicious Magazine, or any other recipe website.
+
+WEBPAGE URL: ${url}
+BASIC INFO: ${JSON.stringify(basicPreview, null, 2)}
+
+WEBPAGE CONTENT:
+${pageContent}
+
+Please extract and return ONLY a valid JSON object with this exact structure:
+
+{
+  "name": "Recipe name",
+  "description": "Brief description",
+  "cuisine_type": "british|italian|asian|mexican|indian|french|mediterranean|american|other",
+  "cooking_method": "roast|fry|grill|bake|simmer|etc",
+  "prep_time": 15,
+  "cook_time": 30,
+  "servings": 4,
+  "difficulty": "easy|medium|hard",
+  "healthy_rating": 3,
+  "ingredients": [
+    {"item": "chicken breast", "quantity": "500g", "notes": "diced", "category": "meat"},
+    {"item": "onion", "quantity": "1 large", "notes": "finely chopped", "category": "vegetables"}
+  ],
+  "instructions": "1. Heat oil in pan...\\n2. Add onion and cook...",
+  "dietary_tags": ["gluten-free", "dairy-free"],
+  "cooking_method": "pan-fry"
+}
+
+IMPORTANT GUIDELINES:
+- Extract ingredients as individual items with quantity, notes, and auto-suggested category
+- Categories: vegetables, fruits, meat, fish, dairy, grains, herbs_spices, oils_condiments, pantry, other
+- Convert all cooking times to minutes (e.g., "1 hour 30 mins" → 90)
+- Instructions should be numbered steps separated by \\n
+- Dietary tags should include things like: vegetarian, vegan, gluten-free, dairy-free, etc.
+- Difficulty: easy (under 30 mins, simple), medium (30-60 mins, moderate skill), hard (60+ mins or advanced techniques)
+- Health rating: 1 (treat/indulgent) to 5 (very healthy/nutritious)
+- If any field is unclear or missing, make a reasonable guess based on the recipe type
+
+Return ONLY the JSON object, no other text.`;
+
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 2000,
+          messages: [
+            { role: "user", content: prompt }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Claude API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const responseText = data.content[0].text;
+
+      // Clean up the response and parse JSON
+      let cleanedResponse = responseText.trim();
+      
+      // Remove any markdown code blocks
+      cleanedResponse = cleanedResponse.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+      
+      // Parse the JSON response
+      const extractedData = JSON.parse(cleanedResponse);
+      
+      // Auto-categorize ingredients if not already categorized
+      if (extractedData.ingredients) {
+        extractedData.ingredients = extractedData.ingredients.map(ing => ({
+          ...ing,
+          category: ing.category || categorizeIngredient(ing.item)
+        }));
+      }
+
+      return extractedData;
+    } catch (error) {
+      console.error('Error extracting recipe with Claude:', error);
+      return null;
+    }
+  };
+
+  // Fetch full webpage content for Claude analysis
+  const fetchPageContent = async (url) => {
+    try {
+      // Use a CORS proxy to fetch the page content
+      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+      const response = await fetch(proxyUrl);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch page content');
+      }
+
+      const data = await response.json();
+      let content = data.contents;
+
+      // Clean up HTML and extract text content
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = content;
+      
+      // Remove script and style elements
+      const scripts = tempDiv.querySelectorAll('script, style, nav, header, footer, .ads, .advertisement');
+      scripts.forEach(el => el.remove());
+      
+      // Get clean text content
+      const textContent = tempDiv.textContent || tempDiv.innerText || '';
+      
+      // Limit content size for Claude (max ~10000 chars to stay within token limits)
+      return textContent.slice(0, 10000);
+    } catch (error) {
+      console.error('Error fetching page content:', error);
+      return null;
+    }
+  };
+
+  const importFromUrl = async () => {
+    if (!importUrl.trim()) return;
+    
+    setImportLoading(true);
+    setMessage('');
+
+    try {
+      console.log('Starting recipe import from:', importUrl);
+      
+      // Step 1: Get basic preview data from LinkPreview
+      let basicPreview = null;
+      const linkPreviewKey = process.env.REACT_APP_LINKPREVIEW_API_KEY;
+      
+      if (linkPreviewKey) {
+        console.log('Fetching basic preview with LinkPreview...');
+        const response = await fetch('https://api.linkpreview.net', {
+          method: 'POST',
+          headers: {
+            'X-Linkpreview-Api-Key': linkPreviewKey,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ q: importUrl })
+        });
+
+        if (response.ok) {
+          basicPreview = await response.json();
+          console.log('LinkPreview data:', basicPreview);
+        } else {
+          console.log('LinkPreview failed, proceeding with Claude only');
+        }
+      }
+
+      // Step 2: Extract detailed recipe data with Claude
+      console.log('Extracting detailed recipe data with Claude...');
+      setMessage('🧠 Analyzing recipe with AI...');
+      
+      const extractedData = await extractRecipeWithClaude(importUrl, basicPreview);
+      
+      if (extractedData) {
+        console.log('Claude extracted data:', extractedData);
+        
+        // Merge basic preview with Claude-extracted data
+        const mergedData = {
+          name: extractedData.name || basicPreview?.title || '',
+          description: extractedData.description || basicPreview?.description || '',
+          cuisine_type: extractedData.cuisine_type || 'british',
+          cooking_method: extractedData.cooking_method || '',
+          prep_time: extractedData.prep_time || '',
+          cook_time: extractedData.cook_time || '',
+          servings: extractedData.servings || 4,
+          difficulty: extractedData.difficulty || 'medium',
+          healthy_rating: extractedData.healthy_rating || 3,
+          ingredients: extractedData.ingredients?.length > 0 
+            ? extractedData.ingredients 
+            : [{ item: '', quantity: '', notes: '', category: '' }],
+          instructions: extractedData.instructions || '',
+          dietary_tags: extractedData.dietary_tags || [],
+          source_url: importUrl,
+          image_url: basicPreview?.image || '',
+          notes: 'Imported with AI assistance'
+        };
+
+        setFormData(prev => ({
+          ...prev,
+          ...mergedData
+        }));
+
+        setImportUrl('');
+        setShowAddForm(true);
+        setMessage('✨ Recipe imported successfully with AI! Please review and adjust as needed.');
+      } else {
+        // Fallback to basic preview only
+        console.log('Using basic preview only');
+        const fallbackData = {
+          name: basicPreview?.title || '',
+          description: basicPreview?.description || '',
+          source_url: importUrl,
+          image_url: basicPreview?.image || ''
+        };
+
+        setFormData(prev => ({
+          ...prev,
+          ...fallbackData
+        }));
+
+        setImportUrl('');
+        setShowAddForm(true);
+        setMessage('📄 Basic recipe data imported! Please add ingredients and instructions manually.');
+      }
+    } catch (error) {
+      console.error('Error importing recipe:', error);
+      setMessage('Error importing recipe. Please try adding manually.');
+    } finally {
+      setImportLoading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -308,50 +541,6 @@ const RecipeManager = ({ userProfile }) => {
       setMessage('Error saving recipe. Please try again.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const importFromUrl = async () => {
-    if (!importUrl.trim()) return;
-    
-    setImportLoading(true);
-    setMessage('');
-
-    try {
-      const apiKey = process.env.REACT_APP_LINKPREVIEW_API_KEY;
-      if (!apiKey) {
-        throw new Error('LinkPreview API key not configured');
-      }
-
-      const response = await fetch('https://api.linkpreview.net', {
-        method: 'POST',
-        headers: {
-          'X-Linkpreview-Api-Key': apiKey,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ q: importUrl })
-      });
-
-      if (!response.ok) throw new Error('Failed to fetch recipe data');
-
-      const preview = await response.json();
-      
-      setFormData(prev => ({
-        ...prev,
-        name: preview.title || '',
-        description: preview.description || '',
-        source_url: importUrl,
-        image_url: preview.image || ''
-      }));
-
-      setImportUrl('');
-      setShowAddForm(true);
-      setMessage('Recipe data imported! Please review and complete the details.');
-    } catch (error) {
-      console.error('Error importing recipe:', error);
-      setMessage('Error importing recipe. Please try adding manually.');
-    } finally {
-      setImportLoading(false);
     }
   };
 
@@ -467,18 +656,27 @@ const RecipeManager = ({ userProfile }) => {
               type="url"
               value={importUrl}
               onChange={(e) => setImportUrl(e.target.value)}
-              placeholder="Paste recipe URL to import..."
+              placeholder="Paste recipe URL to import with AI..."
               className="input"
             />
             <button
               onClick={importFromUrl}
               disabled={importLoading || !importUrl.trim()}
-              className="btn btn-secondary"
+              className="btn btn-secondary ai-import"
             >
-              {importLoading ? <div className="loading small"></div> : <LinkIcon size={16} />}
-              Import
+              {importLoading ? (
+                <div className="loading small"></div>
+              ) : (
+                <>
+                  <Brain size={16} />
+                  AI Import
+                </>
+              )}
             </button>
           </div>
+          <small className="import-help">
+            🧠 Supports BBC Good Food, AllRecipes, Jamie Oliver, Delicious Magazine & more
+          </small>
         </div>
       </div>
 

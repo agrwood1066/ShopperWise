@@ -72,7 +72,7 @@
 .recipe-actions {
   display: flex;
   gap: 20px;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 30px;
   flex-wrap: wrap;
 }
@@ -85,10 +85,41 @@
 .import-input {
   display: flex;
   gap: 10px;
+  margin-bottom: 5px;
 }
 
 .import-input .input {
   flex: 1;
+}
+
+.import-help {
+  color: #6b7280;
+  font-size: 12px;
+  display: block;
+  margin-top: 5px;
+}
+
+.ai-import {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ai-import:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.ai-import:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .loading.small {
@@ -737,5 +768,15 @@
   
   .ingredients-section {
     padding: 15px;
+  }
+
+  .import-input {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ai-import {
+    width: 100%;
+    justify-content: center;
   }
 }
