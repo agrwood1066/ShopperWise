@@ -1,0 +1,86 @@
+/* Meal Planner Component Styles - Reuses coming-soon styles */
+
+.meal-planner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  margin: 0 0 8px 0;
+  color: #1f2937;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 16px;
+}
+
+/* Coming Soon Styles (Shared) */
+.coming-soon {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.coming-soon svg {
+  color: #d1d5db;
+  margin-bottom: 20px;
+}
+
+.coming-soon h2 {
+  margin: 0 0 12px 0;
+  color: #374151;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.coming-soon > p {
+  margin: 0 0 40px 0;
+  color: #6b7280;
+  font-size: 16px;
+}
+
+.planned-features {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.planned-features h3 {
+  margin: 0 0 15px 0;
+  color: #374151;
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.planned-features ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.planned-features li {
+  padding: 8px 0;
+  color: #6b7280;
+  font-size: 14px;
+  position: relative;
+  padding-left: 20px;
+}
+
+.planned-features li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #10b981;
+  font-weight: bold;
+}
