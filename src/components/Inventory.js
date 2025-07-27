@@ -3,19 +3,15 @@ import {
   Package, 
   Plus, 
   Search, 
-  Filter, 
   AlertTriangle, 
-  CheckCircle,
   Clock,
   Trash2,
   Edit,
   X,
   Save,
-  Calendar,
   MapPin,
   TrendingDown,
-  ChefHat,
-  ShoppingCart
+  ChefHat
 } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import { categorizeIngredient } from '../utils/ingredientHelpers';
@@ -50,7 +46,7 @@ const Inventory = ({ userProfile }) => {
     if (userProfile?.family_id) {
       fetchData();
     }
-  }, [userProfile]);
+  }, [userProfile]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchData = async () => {
     try {

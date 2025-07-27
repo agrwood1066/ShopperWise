@@ -7,7 +7,6 @@ import {
   ShoppingCart, 
   AlertTriangle,
   Plus,
-  TrendingUp,
   Star,
   Clock
 } from 'lucide-react';
@@ -30,7 +29,7 @@ const Dashboard = ({ userProfile }) => {
     if (userProfile?.family_id) {
       fetchDashboardData();
     }
-  }, [userProfile]);
+  }, [userProfile]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchDashboardData = async () => {
     try {

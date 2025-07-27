@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Calendar, 
   Plus, 
   Search, 
-  Filter,
   Clock,
-  Users,
   ChefHat,
-  AlertTriangle,
   CheckCircle,
   X,
-  Save,
   RotateCcw,
   Star,
   Utensils,
@@ -37,7 +32,6 @@ const MealPlanner = ({ userProfile }) => {
   const [filterCuisine, setFilterCuisine] = useState('');
   const [filterMealType, setFilterMealType] = useState('');
   const [message, setMessage] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
 
   const mealTypes = [
     { key: 'breakfast', label: 'Breakfast', icon: Coffee, color: '#f59e0b' },
@@ -88,7 +82,7 @@ const MealPlanner = ({ userProfile }) => {
     if (userProfile?.family_id) {
       fetchData();
     }
-  }, [userProfile, currentWeek]);
+  }, [userProfile, currentWeek]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchData = async () => {
     try {

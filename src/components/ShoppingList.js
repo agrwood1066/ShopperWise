@@ -3,29 +3,22 @@ import {
   ShoppingCart, 
   Plus, 
   Search, 
-  Filter,
   Edit3,
   Trash2,
-  Check,
   X,
   Save,
   Calendar,
-  DollarSign,
   MapPin,
-  Clock,
   Download,
   Smartphone,
   Eye,
   EyeOff,
-  AlertCircle,
   CheckCircle2,
   Package,
   Tag,
-  Users,
   ArrowLeft,
   MoreHorizontal,
   Star,
-  Share,
   Circle
 } from 'lucide-react';
 import { supabase } from '../supabaseClient';
@@ -60,17 +53,14 @@ const ShoppingList = ({ userProfile }) => {
   // Filter and search states
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all'); // all, planning, active, completed
-  const [shoppingMode, setShoppingMode] = useState(false);
   
   // AnyList-inspired states
-  const [darkMode, setDarkMode] = useState(false); // Light mode by default
   const [showCompleted, setShowCompleted] = useState(false);
   const [showAddItem, setShowAddItem] = useState(false);
   const [newItemName, setNewItemName] = useState('');
   const [autocompleteItems, setAutocompleteItems] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [recentItems, setRecentItems] = useState([]);
-  const [familyMembers, setFamilyMembers] = useState([]);
   const [showMoreOptions, setShowMoreOptions] = useState(false);
   
   // Edit mode states
@@ -119,12 +109,11 @@ const ShoppingList = ({ userProfile }) => {
     if (userProfile?.family_id) {
       fetchShoppingLists();
       fetchMealPlans();
-      fetchFamilyMembers();
       loadFavorites();
       loadRecentItems();
       loadCustomCategories();
     }
-  }, [userProfile]);
+  }, [userProfile]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Load custom categories from localStorage
   const loadCustomCategories = () => {
@@ -266,20 +255,7 @@ const ShoppingList = ({ userProfile }) => {
     }
   };
 
-  // Fetch family members for sharing display
-  const fetchFamilyMembers = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('full_name, email')
-        .eq('family_id', userProfile.family_id);
 
-      if (error) throw error;
-      setFamilyMembers(data || []);
-    } catch (error) {
-      console.error('Error fetching family members:', error);
-    }
-  };
 
   // Load favorites from localStorage
   const loadFavorites = () => {
@@ -323,10 +299,7 @@ const ShoppingList = ({ userProfile }) => {
     return { remaining, total, completed };
   };
 
-  const getCategoryEmoji = (categoryKey) => {
-    const category = categories.find(cat => cat.key === categoryKey);
-    return category?.emoji || '📦';
-  };
+
 
   const getCategoryInfo = (categoryKey) => {
     return categories.find(cat => cat.key === categoryKey) || categories.find(cat => cat.key === 'other');
@@ -1267,7 +1240,6 @@ const ShoppingList = ({ userProfile }) => {
 
     const { remaining, total, completed } = getProgress();
     const activeItems = currentList.items.filter(item => !item.purchased);
-    const completedItems = currentList.items.filter(item => item.purchased);
     const displayItems = showCompleted ? currentList.items : activeItems;
 
     // Group items by category

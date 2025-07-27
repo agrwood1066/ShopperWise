@@ -24,7 +24,7 @@ const Profile = ({ userProfile, setUserProfile }) => {
       });
       fetchFamilyMembers();
     }
-  }, [userProfile]);
+  }, [userProfile]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchFamilyMembers = async () => {
     try {

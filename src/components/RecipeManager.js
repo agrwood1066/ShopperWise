@@ -3,7 +3,6 @@ import {
   ChefHat, 
   Plus, 
   Search, 
-  Filter, 
   Star, 
   Clock, 
   Users, 
@@ -12,10 +11,7 @@ import {
   Trash2,
   X,
   Save,
-  Link as LinkIcon,
-  AlertCircle,
   Camera,
-  Upload,
   Minus,
   Brain
 } from 'lucide-react';
@@ -83,7 +79,7 @@ const RecipeManager = ({ userProfile }) => {
     if (userProfile?.family_id) {
       fetchRecipes();
     }
-  }, [userProfile]);
+  }, [userProfile]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchRecipes = async () => {
     try {
