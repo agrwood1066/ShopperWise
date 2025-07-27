@@ -241,7 +241,6 @@ const MealPlanner = ({ userProfile }) => {
 
   const assignRecipe = async (week, day, mealType, recipe) => {
     try {
-      setIsSaving(true);
       const weekStartDate = week === 'week2' 
         ? new Date(currentWeek.getTime() + 7 * 24 * 60 * 60 * 1000)
         : currentWeek;
@@ -291,8 +290,6 @@ const MealPlanner = ({ userProfile }) => {
     } catch (error) {
       console.error('Error assigning recipe:', error);
       setMessage('Error saving meal plan. Please try again.');
-    } finally {
-      setIsSaving(false);
     }
   };
 
