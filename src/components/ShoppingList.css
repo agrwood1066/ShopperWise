@@ -2597,3 +2597,63 @@
     print-color-adjust: exact;
   }
 }
+
+/* More Options Dropdown Styles */
+.more-options-container {
+  position: relative;
+}
+
+.more-options-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 160px;
+  padding: 8px 0;
+  margin-top: 4px;
+}
+
+.option-item {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 14px;
+  color: #333;
+}
+
+.option-item:hover {
+  background-color: #f5f5f5;
+}
+
+.option-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.option-item:disabled:hover {
+  background-color: transparent;
+}
+
+/* Mobile-specific styles for more options */
+@media (max-width: 768px) {
+  .more-options-menu {
+    min-width: 140px;
+    font-size: 16px;
+  }
+  
+  .option-item {
+    padding: 14px 16px;
+    font-size: 16px;
+  }
+}

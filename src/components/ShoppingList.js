@@ -71,6 +71,7 @@ const ShoppingList = ({ userProfile }) => {
   const [favorites, setFavorites] = useState([]);
   const [recentItems, setRecentItems] = useState([]);
   const [familyMembers, setFamilyMembers] = useState([]);
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
   
   // Edit mode states
   const [editingItem, setEditingItem] = useState(null);
